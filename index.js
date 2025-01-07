@@ -88,6 +88,7 @@ server.use(passport.authenticate('session'));
 server.use(
   cors({
     exposedHeaders: ['X-Total-Count'],
+    origin: "https://your-frontend-domain.vercel.app",credentials: true
   })
 );
 server.use(express.json()); // to parse req.body
