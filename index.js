@@ -98,7 +98,7 @@ server.use('/products', isAuth(), productsRouter.router);
 server.use('/categorys', isAuth(), categoriesRouter.router);
 server.use('/brands', isAuth(), brandsRouter.router);
 server.use('/users', isAuth(), usersRouter.router);
-server.use('/', authRouter.router);
+server.use('/auth', authRouter.router);
 server.use('/cart', isAuth(), cartRouter.router);
 server.use('/orders', isAuth(), ordersRouter.router);
 
