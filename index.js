@@ -88,9 +88,11 @@ server.use(passport.authenticate('session'));
 server.use(
   cors({
     exposedHeaders: ['X-Total-Count'],
-    origin: "https://e-commerce-deployment-psi.vercel.app",credentials: true
+    origin: '*', 
+    credentials: true 
   })
 );
+
 server.use(express.json()); // to parse req.body
 
 server.use('/products', isAuth(), productsRouter.router);
