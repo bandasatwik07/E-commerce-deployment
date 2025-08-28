@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 exports.createUser = async (req, res) => {
   try {
     const salt = crypto.randomBytes(16);
+    // console.log(req.body.password)
     crypto.pbkdf2(
       req.body.password,
       salt,
@@ -25,10 +26,13 @@ exports.createUser = async (req, res) => {
               sanitizeUser(doc),
               process.env.JWT_SECRET_KEY
             );
+            console.log(token)
             res
               .cookie('jwt', token, {
                 expires: new Date(Date.now() + 3600000),
                 httpOnly: true,
+                secure: true,
+                sameSite: 'None'
               })
               .status(201)
               .json({ id: doc.id, role: doc.role });
@@ -42,15 +46,17 @@ exports.createUser = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
-  console.log(req.user)
   const user = req.user;
+  // console.log(user.token)
   res
     .cookie('jwt', user.token, {
       expires: new Date(Date.now() + 3600000),
       httpOnly: true,
+      secure: true,
+      sameSite: 'None'
     })
     .status(201)
-    .json({ id: user.id, role: user.role });
+    .json({ id: user.id, role: user.role, token: user.token });
 };
 
 exports.logout = async (req, res) => {

@@ -1,20 +1,19 @@
 const passport = require('passport');
 const nodemailer = require('nodemailer');
+require('dotenv').config();
 
 let transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false, // true for 465, false for other ports
   auth: {
-    user: 'coderdost@gmail.com', // gmail
+    user: process.env.MAIL_USER || 'bandasatwik07@gmail.com',
     pass: process.env.MAIL_PASSWORD, // pass
   },
 });
 
 
-exports.isAuth = (req, res, done) => {
-  return passport.authenticate('jwt');
-};
+exports.isAuth = () => passport.authenticate('jwt', { session: false });
 
 exports.sanitizeUser = (user) => {
   return { id: user.id, role: user.role };
@@ -31,7 +30,7 @@ exports.cookieExtractor = function (req) {
 
 exports.sendMail = async function ({to, subject, text, html}){
     let info = await transporter.sendMail({
-        from: '"E-commerce" <coderdost@gmail.com>', // sender address
+        from: '"E-commerce" <bandasatwik07@gmail.com>', // sender address
         to,
         subject,
         text,
@@ -220,7 +219,7 @@ exports.invoiceTemplate = function(order){
           <!-- start copy -->
           <tr>
             <td align="left" bgcolor="#ffffff" style="padding: 24px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; line-height: 24px;">
-              <p style="margin: 0;">Here is a summary of your recent order. If you have any questions or concerns about your order, please <a href="coderdost@gmail.com">contact us</a>.</p>
+              <p style="margin: 0;">Here is a summary of your recent order. If you have any questions or concerns about your order, please <a href="bandasatwik07@gmail.com">contact us</a>.</p>
             </td>
           </tr>
           <!-- end copy -->

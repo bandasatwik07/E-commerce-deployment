@@ -9,9 +9,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const JwtStrategy = require('passport-jwt').Strategy;
-const ExtractJwt = require('passport-jwt').ExtractJwt;
 const cookieParser = require('cookie-parser');
-const { createProduct } = require('./controller/Product');
 const productsRouter = require('./routes/Products');
 const categoriesRouter = require('./routes/Categorys');
 const brandsRouter = require('./routes/Brands');
@@ -75,8 +73,8 @@ opts.secretOrKey = process.env.JWT_SECRET_KEY;
 
 //middlewares
 
-server.use(express.static(path.resolve(__dirname, 'build')));
 server.use(cookieParser());
+server.use(express.static(path.resolve(__dirname, 'build')));
 server.use(
   session({
     secret: process.env.SESSION_KEY,
@@ -84,21 +82,22 @@ server.use(
     saveUninitialized: false, // don't create session until something stored
   })
 );
+
 server.use(passport.authenticate('session'));
 server.use(
   cors({
     exposedHeaders: ['X-Total-Count'],
-    origin: '*', 
-    credentials: true 
+    origin: ["http://localhost:3000", "https://e-commerce-frontend-gjeo.vercel.app"],
+    credentials: true // Required to allow cookies from browser
   })
 );
 
 server.use(express.json()); // to parse req.body
 
-server.use('/products', isAuth(), productsRouter.router);
+server.use('/products', productsRouter.router);
 // we can also use JWT token for client-only auth
-server.use('/categorys', isAuth(), categoriesRouter.router);
-server.use('/brands', isAuth(), brandsRouter.router);
+server.use('/categorys', categoriesRouter.router);
+server.use('/brands', brandsRouter.router);
 server.use('/users', isAuth(), usersRouter.router);
 server.use('/auth', authRouter.router);
 server.use('/cart', isAuth(), cartRouter.router);
@@ -118,10 +117,10 @@ passport.use(
     done
   ) {
     // by default passport uses username
-    console.log({ email, password });
+    // console.log({ email, password });
     try {
       const user = await User.findOne({ email: email });
-      console.log(email, password, user);
+      // console.log(email, password, user);
       if (!user) {
         return done(null, false, { message: 'invalid credentials' }); // for safety
       }
